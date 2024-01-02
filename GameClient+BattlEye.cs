@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+//A clipping from my old project!!!
 public sealed partial class GameClient : ENetClient
 {
 	IntPtr battlEyeClientHandle = IntPtr.Zero;
@@ -12,6 +13,7 @@ public sealed partial class GameClient : ENetClient
 	BEClient.BECL_BE_DATA battlEyeClientRunData = null;
 	private bool BattlEyeInitialized = false;
 
+	//somehow inform the client at the authorization stage that you need to initialize the anti-cheat
 	private bool RequireInitializeBattlEye(ByteStream stream)
 	{
 
@@ -67,6 +69,7 @@ public sealed partial class GameClient : ENetClient
 		return result;
 	}
 
+	//need call every frame!!!
 	private void UpdateBattlEye()
 	{
 		if (BattlEyeInitialized && battlEyeClientRunData != null && battlEyeClientRunData.pfnRun != null)
@@ -75,6 +78,7 @@ public sealed partial class GameClient : ENetClient
 		}
 	}
 
+	//Always do it when the client disconnects!!
 	private void ShutdownBattlEye()
 	{
 		if (BattlEyeInitialized)
@@ -113,6 +117,7 @@ public sealed partial class GameClient : ENetClient
 		Debug.Log($"BattlEye client requested restart with reason: {reason} [{reasonStr}]");
 	}
 
+	//sending data to BEServer using the game protocol
 	private void battlEyeClientSendPacket(IntPtr packetHandle, int length)
 	{
 		using(ByteStream bs = ByteStream.GetBitStream())
@@ -124,6 +129,7 @@ public sealed partial class GameClient : ENetClient
         }
 	}
 
+	//receiving data from BEServer using the game protocol
 	private unsafe void OnReceivedBattlEye(ByteStream stream, int length)
 	{
 		if (battlEyeClientHandle != IntPtr.Zero && battlEyeClientRunData != null && battlEyeClientRunData.pfnReceivedPacket != null)
