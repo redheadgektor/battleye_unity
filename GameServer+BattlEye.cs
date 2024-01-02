@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
+//A clipping from my old project!!!
 public sealed partial class GameServer : ENetServer
 {
     IntPtr battlEyeServerHandle = IntPtr.Zero;
@@ -79,6 +80,7 @@ public sealed partial class GameServer : ENetServer
         return result;
     }
 
+    //call every frame!!
     private void UpdateBattlEye()
     {
         if (BattlEyeInitialized && battlEyeServerRunData != null && battlEyeServerRunData.pfnRun != null)
@@ -87,6 +89,7 @@ public sealed partial class GameServer : ENetServer
         }
     }
 
+    //Always do it when the server stops!! The library informs BEService.exe that the server is disabled
     private void ShutdownBattlEye()
     {
         if (BattlEyeInitialized && battlEyeServerRunData != null)
@@ -106,6 +109,7 @@ public sealed partial class GameServer : ENetServer
         Debug.Log($"[GameServer] BattlEye: {message}");
     }
 
+    //Be sure to implement! This way anti-cheat will be able to kick/ban clients
     private void battlEyeServerKickPlayer(int clientID, string reason)
     {
         SendChatMessage(Color.red, "BattlEye", Color.yellow, $"Kick player {Clients_Array[clientID].playerName} - {reason}");
@@ -113,6 +117,7 @@ public sealed partial class GameServer : ENetServer
         Kick(Clients_Array[clientID].Peer, DisconnectReason.BattlEye, reason);
     }
 
+    //sending internal anticheat data to BEClient using the game protocol
     private void battlEyeServerSendPacket(int playerID, IntPtr packetHandle, int length)
     {
         if (Clients_Array[playerID] != null)
@@ -127,6 +132,7 @@ public sealed partial class GameServer : ENetServer
         }
     }
 
+    //receiving internal anticheat data from BEClient using the game protocol
     private unsafe void OnReceivedBattlEye(ServerClientInfo info, ByteStream stream)
     {
         if (battlEyeServerHandle != IntPtr.Zero && battlEyeServerRunData != null && battlEyeServerRunData.pfnReceivedPacket != null)
